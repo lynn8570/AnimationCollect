@@ -165,4 +165,68 @@ rescaleCanvas：
 
 [matrix原理](https://github.com/GcsSloop/AndroidNote/blob/master/CustomView/Advance/[09]Matrix_Basic.md)
 
-待续。。。。
+
+
+动画影响的属性是percentage
+
+```
+       /**
+         * Default constructor.
+         *
+         * @param pathView The view that must be animated.
+         */
+        public AnimatorBuilder(final PathView pathView) {
+            anim = ObjectAnimator.ofFloat(pathView, "percentage", 0.0f, 1.0f);
+        }
+```
+
+通过影响percentage的值，从而影响
+
+```
+    /**
+     * Animate this property. It is the percentage of the path that is drawn.
+     * It must be [0,1].
+     *
+     * @param percentage float the percentage of the path.
+     */
+    public void setPercentage(float percentage) {
+        if (percentage < 0.0f || percentage > 1.0f) {
+            throw new IllegalArgumentException("setPercentage not between 0.0f and 1.0f");
+        }
+        progress = percentage;
+        synchronized (mSvgLock) {
+            updatePathsPhaseLocked();//更新path
+        }
+        invalidate();再重新绘制
+    }
+```
+
+根据progress，更新svgPath
+
+```
+    /**
+     * This refreshes the paths before draw and resize.
+     */
+    private void updatePathsPhaseLocked() {
+        final int count = paths.size();
+        for (int i = 0; i < count; i++) {
+            SvgUtils.SvgPath svgPath = paths.get(i);
+            svgPath.path.reset();
+            svgPath.measure.getSegment(0.0f, svgPath.length * progress, svgPath.path, true);
+            //Given a start and stop distance, return in dst the intervening segment(s). If the segment is zero-length, return false, else return true. startD and stopD are pinned to legal values (0..getLength()). If startD <= stopD then return false (and leave dst untouched). Begin the segment with a moveTo if startWithMoveTo is true
+            // Required only for Android 4.4 and earlier
+            svgPath.path.rLineTo(0.0f, 0.0f);
+        }
+    }
+```
+
+从而实现，path动画
+
+
+
+做一个 水波纹动画的path
+
+text path
+
+关于svg，还有很多知识点需要扩展，svg path后续完善
+
