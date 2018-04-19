@@ -196,5 +196,5 @@
 
 重新实现的代码可以参考
 
-
+https://github.com/lynn8570/VoiceView/blob/master/animlib/src/main/java/anim/lynn/voice/VoiceWave.java
 
