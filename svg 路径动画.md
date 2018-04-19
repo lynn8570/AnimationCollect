@@ -222,11 +222,3 @@ rescaleCanvas：
 
 从而实现，path动画
 
-
-
-做一个 水波纹动画的path
-
-text path
-
-关于svg，还有很多知识点需要扩展，svg path后续完善
-
